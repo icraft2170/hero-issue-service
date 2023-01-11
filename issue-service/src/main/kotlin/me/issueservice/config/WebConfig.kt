@@ -10,10 +10,14 @@ import org.springframework.web.method.support.ModelAndViewContainer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
 
 @Configuration
-class WebConfig : WebMvcConfigurationSupport() {
+class WebConfig(
+    private val authUserHandlerArgumentResolver: AuthUserHandlerArgumentResolver,
+) : WebMvcConfigurationSupport() {
 
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
-        super.addArgumentResolvers(argumentResolvers)
+        argumentResolvers.apply {
+            add(authUserHandlerArgumentResolver)
+        }
     }
 }
 
