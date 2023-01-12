@@ -27,7 +27,6 @@ data class IssueResponse (
     val updatedAt: LocalDateTime?,
 ) {
 
-
     companion object {
         operator fun invoke(issue: Issue) =
             with(issue) {
@@ -42,8 +41,6 @@ data class IssueResponse (
                     updatedAt = issue.updatedAt,
                 )
             }
-
-
     }
 
 }
