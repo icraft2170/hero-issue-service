@@ -17,7 +17,7 @@ class Comment (
     val username: String,
 
     @Column
-    val body: String,
+    var body: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

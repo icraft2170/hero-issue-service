@@ -18,7 +18,12 @@ class CommentService (
     private val issueRepository: IssueRepository,
 ) {
     @Transactional
-    fun create(issueId: Long, userId: Long, username: String, request: CommentRequest): CommentResponse {
+    fun create(
+        issueId: Long,
+        userId: Long,
+        username: String,
+        request: CommentRequest
+    ): CommentResponse {
         val issue: Issue = issueRepository.findByIdOrNull(issueId)
             ?: throw NotFoundException("이슈가 존재하지 않습니다.")
 
@@ -31,5 +36,22 @@ class CommentService (
 
         issue.comments.add(comment)
         return commentRepository.save(comment).toResponse()
+    }
+
+    @Transactional
+    fun edit(commentId: Long, userId: Long, request: CommentRequest): CommentResponse? {
+        return commentRepository.findByIdAndUserId(commentId, userId)?.run {
+            body = request.body
+            commentRepository.save(this).toResponse()
+        }
+    }
+
+    @Transactional
+    fun delete(issueId: Long, commentId: Long, userId: Long) {
+        val issue: Issue = issueRepository.findByIdOrNull(issueId)
+            ?: throw NotFoundException("이슈가 존재하지 않습니다.")
+        commentRepository.findByIdAndUserId(commentId, userId).let { comment: Comment? ->
+            issue.comments.remove(comment)
+        }
     }
 }
