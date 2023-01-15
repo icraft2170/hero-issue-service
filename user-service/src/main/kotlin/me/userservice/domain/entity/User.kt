@@ -19,7 +19,7 @@ data class User(
     val username: String,
 
     @Column
-    val profileUrl: String?,
+    val profileUrl: String? = null,
 
     @CreatedDate
     @Column("created_at")

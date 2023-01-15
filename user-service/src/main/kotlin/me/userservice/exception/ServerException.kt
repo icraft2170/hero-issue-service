@@ -5,4 +5,7 @@ sealed class ServerException(
     override val message: String,
 ) : RuntimeException()
 
+data class UserExistsException(
+    override val message: String = "이미 존재하는 유저입니다",
+) : ServerException(409, message)
 
