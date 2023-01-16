@@ -1,8 +1,10 @@
 package me.userservice.service
 
+import com.auth0.jwt.interfaces.DecodedJWT
 import me.userservice.config.JWTProperties
 import me.userservice.domain.entity.User
 import me.userservice.domain.repository.UserRepository
+import me.userservice.exception.InvalidJwtTokenException
 import me.userservice.exception.PasswordNotMatchedException
 import me.userservice.exception.UserExistsException
 import me.userservice.exception.UserNotFoundException
@@ -67,6 +69,20 @@ class UserService(
     suspend fun logout(token: String) {
         cacheManager.awaitEvict(token)
 
+    }
+
+    suspend fun getByToken(token: String): User {
+        val cachedUser = cacheManager.awaitGetOrPut(key = token, ttl = CACHE_TTL) {
+            val decodedJwt: DecodedJWT = JWTUtils.decode(token, jwtProperties.secret, jwtProperties.issuer)
+
+            val userId = decodedJwt.claims["userId"]?.asLong() ?: throw InvalidJwtTokenException()
+            get(userId)
+        }
+        return cachedUser
+    }
+
+    suspend fun get(userId: Long): User {
+        return userRepository.findById(userId) ?: throw UserNotFoundException()
     }
 
     companion object {

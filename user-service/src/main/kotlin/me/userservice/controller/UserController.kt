@@ -1,12 +1,10 @@
 package me.userservice.controller
 
-import me.userservice.model.AuthToken
-import me.userservice.model.SignInRequest
-import me.userservice.model.SignInResponse
-import me.userservice.model.SignUpRequest
+import me.userservice.model.*
 import me.userservice.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -35,5 +33,12 @@ class UserController(
         @AuthToken token: String,
     ) {
         userService.logout(token)
+    }
+
+    @GetMapping("/me")
+    suspend fun get(
+        @AuthToken token: String,
+    ): MeResponse {
+        return MeResponse(userService.getByToken(token))
     }
 }
