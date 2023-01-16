@@ -64,6 +64,11 @@ class UserService(
         }
     }
 
+    suspend fun logout(token: String) {
+        cacheManager.awaitEvict(token)
+
+    }
+
     companion object {
         private val CACHE_TTL = Duration.ofMinutes(1)
     }
